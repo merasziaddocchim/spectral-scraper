@@ -1,0 +1,37 @@
+name: Daily Scraper
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Run daily at 3 AM UTC
+  workflow_dispatch:     # Allow manual run from GitHub UI
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Scrapers
+        run: |
+          python scrapers/nmrshiftdb_scraper.py
+          python scrapers/nist_webbook_scraper.py
+          python scrapers/pubchem_scraper.py
+          python main.py
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "action@github.com"
+          git add data/
+          git commit -m "Daily scrape update" || echo "No changes to commit"
+          git push
