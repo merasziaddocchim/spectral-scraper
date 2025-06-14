@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+pubchempy
+rdkit-pypi
+pandas
+pyjcamp
+tqdm
+requests-cache
+fake-useragent
