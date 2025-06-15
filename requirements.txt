@@ -1,6 +1,7 @@
 requests
 beautifulsoup4
 pubchempy
+rdkit-pypi
 pandas
 pyjcamp
 tqdm
