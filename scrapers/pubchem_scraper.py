@@ -3,21 +3,16 @@ import time
 import json
 from tqdm import tqdm
 
-# 🔢 List of PubChem Compound IDs to fetch
-compound_cids = [2244, 702, 887, 6334]  # Example: Aspirin, Benzene, etc.
+compound_cids = [2244, 702, 887, 6334]  # Example CIDs
 
-# 📁 Where to save the results
 output_file = "data/pubchem_spectra.json"
 failed_file = "data/failed_compounds.txt"
 
-# 🧪 What spectral types to look for
 spectral_keywords = ["NMR", "IR", "Mass Spectrum", "UV"]
 
-# 📦 Final data store
 results = []
 failed = []
 
-# 🚀 Function to extract spectral data
 def extract_spectra_from_sections(sections):
     spectra = []
     for section in sections:
@@ -29,12 +24,10 @@ def extract_spectra_from_sections(sections):
                     "description": section.get("Description", ""),
                     "information": section.get("Information", [])
                 })
-        # Recurse through child sections
         if "Sections" in section:
             spectra += extract_spectra_from_sections(section["Sections"])
     return spectra
 
-# 🛠 Main scraping loop
 for cid in tqdm(compound_cids):
     url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/JSON"
     try:
@@ -55,9 +48,8 @@ for cid in tqdm(compound_cids):
     except Exception as e:
         failed.append(cid)
         print(f"[!] Failed CID {cid}: {e}")
-    time.sleep(0.5)  # ⏱️ Avoid hammering PubChem
+    time.sleep(0.5)
 
-# 💾 Save results
 with open(output_file, "w") as f:
     json.dump(results, f, indent=2)
 
